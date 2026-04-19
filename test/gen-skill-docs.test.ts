@@ -2125,16 +2125,17 @@ describe('setup script validation', () => {
     expect(fnBody).toContain('rm -f "$target"');
   });
 
-  test('setup supports --host auto|claude|codex|kiro|opencode', () => {
+  test('setup supports --host with config-driven host list', () => {
     expect(setupContent).toContain('--host');
-    expect(setupContent).toContain('claude|codex|kiro|factory|opencode|auto');
+    expect(setupContent).toContain('claude|codex|kiro|auto');
+    expect(setupContent).toContain('list-strategy symlink-generic');
   });
 
-  test('auto mode detects claude, codex, kiro, and opencode binaries', () => {
+  test('auto mode detects claude, codex, and kiro binaries; symlink-generated hosts via detect command', () => {
     expect(setupContent).toContain('command -v claude');
     expect(setupContent).toContain('command -v codex');
     expect(setupContent).toContain('command -v kiro-cli');
-    expect(setupContent).toContain('command -v opencode');
+    expect(setupContent).toContain('host-config-export.ts detect');
   });
 
   // T1: Sidecar skip guard — prevents .agents/skills/gstack from being linked as a skill
@@ -2161,19 +2162,20 @@ describe('setup script validation', () => {
     expect(setupContent).toContain('~/.kiro/skills/gstack');
   });
 
-  test('setup supports --host opencode with install section and OpenCode skill path vars', () => {
-    expect(setupContent).toContain('INSTALL_OPENCODE=');
-    expect(setupContent).toContain('OPENCODE_SKILLS="$HOME/.config/opencode/skills"');
-    expect(setupContent).toContain('OPENCODE_GSTACK="$OPENCODE_SKILLS/gstack"');
+  test('setup handles opencode via config-driven generic install', () => {
+    // opencode is a symlink-generated host, installed via the generic loop
+    expect(setupContent).toContain('SYMLINKED_HOSTS_TO_INSTALL');
+    expect(setupContent).toContain('create_symlinked_host_runtime_root');
+    expect(setupContent).toContain('link_symlinked_host_skill_dirs');
+    // opencode's nested assets (review/specialists, qa/templates, etc.) are declared
+    // in hosts/opencode.ts globalSymlinks and read at install time via host-config-export
+    expect(setupContent).toContain('host-config-export.ts symlinks');
   });
 
-  test('setup installs OpenCode skills into a nested gstack runtime root', () => {
-    expect(setupContent).toContain('create_opencode_runtime_root');
-    expect(setupContent).toContain('.opencode/skills');
-    expect(setupContent).toContain('review/specialists');
-    expect(setupContent).toContain('qa/templates');
-    expect(setupContent).toContain('qa/references');
-    expect(setupContent).toContain('dx-hall-of-fame.md');
+  test('setup installs symlink-generated hosts into a nested gstack runtime root', () => {
+    expect(setupContent).toContain('create_symlinked_host_runtime_root');
+    expect(setupContent).toContain('globalRoot');
+    expect(setupContent).toContain('hostSubdir');
   });
 
   test('create_agents_sidecar links runtime assets', () => {
