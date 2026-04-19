@@ -30,8 +30,8 @@ const ROOT = path.resolve(import.meta.dir, '..');
 // ─── hosts/index.ts ─────────────────────────────────────────
 
 describe('hosts/index.ts', () => {
-  test('ALL_HOST_CONFIGS has 10 hosts', () => {
-    expect(ALL_HOST_CONFIGS.length).toBe(10);
+  test('ALL_HOST_CONFIGS has 13 hosts', () => {
+    expect(ALL_HOST_CONFIGS.length).toBe(13);
   });
 
   test('ALL_HOST_NAMES matches config names', () => {
@@ -381,6 +381,24 @@ describe('host-config-export.ts CLI', () => {
     expect(stdout).toContain('claude');
   });
 
+  test('list-strategy symlink-generic returns only generic-install hosts', () => {
+    const { stdout, exitCode } = run('list-strategy', 'symlink-generic');
+    expect(exitCode).toBe(0);
+    const names = stdout.split('\n').filter(Boolean);
+    expect(names).toContain('factory');
+    expect(names).toContain('opencode');
+    expect(names).toContain('cursor');
+    // Special-case hosts are NOT included (they have custom setup logic)
+    expect(names).not.toContain('claude');
+    expect(names).not.toContain('codex');
+    expect(names).not.toContain('kiro');
+  });
+
+  test('list-strategy with missing arg exits 1', () => {
+    const { exitCode } = run('list-strategy');
+    expect(exitCode).toBe(1);
+  });
+
   test('unknown command exits 1', () => {
     const { exitCode } = run('badcommand');
     expect(exitCode).toBe(1);
@@ -429,7 +447,7 @@ describe('host config correctness', () => {
       if (config.name === 'claude') {
         expect(config.install.linkingStrategy).toBe('real-dir-symlink');
       } else {
-        expect(config.install.linkingStrategy).toBe('symlink-generated');
+        expect(['symlink-generated', 'symlink-generic']).toContain(config.install.linkingStrategy);
       }
     }
   });

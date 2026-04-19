@@ -371,6 +371,10 @@ function processExternalHost(
   // Transform frontmatter (host-aware)
   let result = transformFrontmatter(content, host);
 
+  // Sync name: field with the prefixed directory name so invocation name matches
+  // directory name (e.g., name: gstack-ship instead of name: ship).
+  result = result.replace(/^(name:\s*)\S+$/m, `$1${name}`);
+
   // Insert safety advisory at the top of the body (after frontmatter)
   if (safetyProse) {
     const bodyStart = result.indexOf('\n---') + 4;
