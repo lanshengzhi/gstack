@@ -1,14 +1,14 @@
 import type { HostConfig } from '../scripts/host-config';
 
-const slate: HostConfig = {
-  name: 'slate',
-  displayName: 'Slate',
-  cliCommand: 'slate',
+const pi: HostConfig = {
+  name: 'pi',
+  displayName: 'Pi',
+  cliCommand: 'pi',
   cliAliases: [],
 
-  globalRoot: '.slate/skills/gstack',
-  localSkillRoot: '.slate/skills/gstack',
-  hostSubdir: '.slate',
+  globalRoot: '.pi/skills/gstack',
+  localSkillRoot: '.pi/skills/gstack',
+  hostSubdir: '.pi',
   usesEnvVars: true,
 
   frontmatter: {
@@ -23,9 +23,9 @@ const slate: HostConfig = {
   },
 
   pathRewrites: [
-    { from: '~/.claude/skills/gstack', to: '~/.slate/skills/gstack' },
-    { from: '.claude/skills/gstack', to: '.slate/skills/gstack' },
-    { from: '.claude/skills', to: '.slate/skills' },
+    { from: '~/.claude/skills/gstack', to: '~/.pi/skills/gstack' },
+    { from: '.claude/skills/gstack', to: '.pi/skills/gstack' },
+    { from: '.claude/skills', to: '.pi/skills' },
   ],
 
   suppressedResolvers: ['GBRAIN_CONTEXT_LOAD', 'GBRAIN_SAVE_RESULTS'],
@@ -45,4 +45,4 @@ const slate: HostConfig = {
   learningsMode: 'basic',
 };
 
-export default slate;
+export default pi;

@@ -39,7 +39,7 @@ const cursor: HostConfig = {
 
   install: {
     prefixable: false,
-    linkingStrategy: 'symlink-generated',
+    linkingStrategy: 'symlink-generic',
   },
 
   learningsMode: 'basic',

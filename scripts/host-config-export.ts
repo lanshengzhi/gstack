@@ -113,7 +113,21 @@ switch (command) {
     break;
   }
 
+  case 'list-strategy': {
+    const [strategy] = args;
+    if (!strategy) {
+      console.error('Usage: host-config-export.ts list-strategy <strategy>');
+      process.exit(1);
+    }
+    for (const config of ALL_HOST_CONFIGS) {
+      if (config.install.linkingStrategy === strategy) {
+        console.log(config.name);
+      }
+    }
+    break;
+  }
+
   default:
-    console.error('Usage: host-config-export.ts <list|get|detect|validate|symlinks> [args]');
+    console.error('Usage: host-config-export.ts <list|get|detect|validate|symlinks|list-strategy> [args]');
     process.exit(1);
 }

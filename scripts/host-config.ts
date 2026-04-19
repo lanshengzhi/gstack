@@ -93,8 +93,13 @@ export interface HostConfig {
   install: {
     /** Whether gstack-config skill_prefix applies (Claude only). */
     prefixable: boolean;
-    /** How skills are linked into the host dir. */
-    linkingStrategy: 'real-dir-symlink' | 'symlink-generated';
+    /**
+     * How skills are linked into the host dir.
+     * - 'real-dir-symlink': Claude only — real dirs with SKILL.md symlinks inside.
+     * - 'symlink-generated': Special hosts (codex, kiro, openclaw, hermes, gbrain) — custom setup logic.
+     * - 'symlink-generic': Generic hosts — fully config-driven install via create_symlinked_host_runtime_root.
+     */
+    linkingStrategy: 'real-dir-symlink' | 'symlink-generated' | 'symlink-generic';
   };
 
   // --- Host-Specific Behavioral Config ---
@@ -148,8 +153,8 @@ export function validateHostConfig(config: HostConfig): string[] {
   if (!['allowlist', 'denylist'].includes(config.frontmatter.mode)) {
     errors.push(`frontmatter.mode must be 'allowlist' or 'denylist'`);
   }
-  if (!['real-dir-symlink', 'symlink-generated'].includes(config.install.linkingStrategy)) {
-    errors.push(`install.linkingStrategy must be 'real-dir-symlink' or 'symlink-generated'`);
+  if (!['real-dir-symlink', 'symlink-generated', 'symlink-generic'].includes(config.install.linkingStrategy)) {
+    errors.push(`install.linkingStrategy must be 'real-dir-symlink', 'symlink-generated', or 'symlink-generic'`);
   }
 
   return errors;

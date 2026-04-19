@@ -54,7 +54,7 @@ const factory: HostConfig = {
 
   install: {
     prefixable: false,
-    linkingStrategy: 'symlink-generated',
+    linkingStrategy: 'symlink-generic',
   },
 
   coAuthorTrailer: 'Co-Authored-By: Factory Droid <droid@users.noreply.github.com>',
